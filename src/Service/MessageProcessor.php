@@ -7,7 +7,6 @@ namespace App\Service;
 use App\Model\FailedMessage;
 use App\Model\FailureReport;
 use App\Model\Inspection;
-use App\Service\Classifier\ClassifierInterface;
 use DateTimeImmutable;
 
 class MessageProcessor
@@ -16,22 +15,15 @@ class MessageProcessor
 
     public function __construct(
         private MessageValidator $validator,
-        private ClassifierInterface $classifier,
+        private MessageClassifier $classifier,
         private DateParser $dateParser
     ) {}
 
-    /**
-     * Resets the deduplication state.
-     */
     public function reset(): void
     {
         $this->processedDescriptions = [];
     }
 
-    /**
-     * Process a list of raw messages.
-     * Returns an array with inspections, failure reports, and failed messages.
-     */
     public function process(array $messages, ?string $currentTime = null): array
     {
         $this->reset();
@@ -43,7 +35,7 @@ class MessageProcessor
         $createdAt = $currentTime ?? (new DateTimeImmutable())->format(DateTimeImmutable::ATOM);
 
         foreach ($messages as $msg) {
-            // 1. Validation
+            // Validate incoming message structure
             $validationResult = $this->validator->validate($msg);
             if ($validationResult !== true) {
                 $failedMessages[] = new FailedMessage(
@@ -55,7 +47,7 @@ class MessageProcessor
 
             $description = $msg['description'];
 
-            // 2. Deduplication check
+            // Prevent duplicate entities from the same description
             $normalizedDesc = trim(mb_strtolower($description));
             if (isset($this->processedDescriptions[$normalizedDesc])) {
                 $failedMessages[] = new FailedMessage(
@@ -65,13 +57,9 @@ class MessageProcessor
                 continue;
             }
 
-            // 3. Classification
             $type = $this->classifier->classify($description);
-
-            // 4. Phone number parsing/mapping
             $clientPhone = $this->mapPhone($msg['phone'] ?? null);
 
-            // 5. Build entities based on classification
             if ($type === 'inspection') {
                 $dueDateStr = isset($msg['dueDate']) ? (string)$msg['dueDate'] : null;
                 $dueDate = $this->dateParser->parse($dueDateStr);
@@ -118,7 +106,6 @@ class MessageProcessor
                 );
             }
 
-            // Mark this description as processed
             $this->processedDescriptions[$normalizedDesc] = true;
         }
 
@@ -129,10 +116,6 @@ class MessageProcessor
         ];
     }
 
-    /**
-     * Map phone number according to rules.
-     * Returns null if missing/empty/invalid.
-     */
     private function mapPhone(mixed $phone): ?string
     {
         if ($phone === null) {
@@ -144,8 +127,7 @@ class MessageProcessor
             return null;
         }
 
-        // Rule: "If duplicate/missing/empty -> leave empty. Any fields you cannot determine — leave empty."
-        // Let's filter out stray characters or strings with no digits (like '"')
+        // Clean up stray quotes/characters and only accept valid digits
         if (preg_match('/[0-9]/', $phoneStr) === 0) {
             return null;
         }
@@ -153,24 +135,18 @@ class MessageProcessor
         return $phoneStr;
     }
 
-    /**
-     * Determine priority based on description content.
-     */
     private function determinePriority(string $description): string
     {
         $lowerDesc = mb_strtolower($description);
 
-        // Check for negations to treat as normal priority
         if (str_contains($lowerDesc, 'not urgent') || str_contains($lowerDesc, 'nie pilne') || str_contains($lowerDesc, 'not very urgent')) {
             return 'normal';
         }
 
-        // Check for critical priority first (case-insensitive)
         if (str_contains($lowerDesc, 'bardzo pilne') || str_contains($lowerDesc, 'very urgent')) {
             return 'critical';
         }
 
-        // Check for high priority (case-insensitive)
         if (str_contains($lowerDesc, 'pilne') || str_contains($lowerDesc, 'urgent')) {
             return 'high';
         }

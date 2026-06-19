@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Service\Classifier\KeywordClassifier;
+use App\Service\MessageClassifier;
 use PHPUnit\Framework\TestCase;
 
-class KeywordClassifierTest extends TestCase
+class MessageClassifierTest extends TestCase
 {
-    private KeywordClassifier $classifier;
+    private MessageClassifier $classifier;
 
     protected function setUp(): void
     {
-        $this->classifier = new KeywordClassifier();
+        $this->classifier = new MessageClassifier();
     }
 
     /**

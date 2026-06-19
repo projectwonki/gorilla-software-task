@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Service\Classifier\KeywordClassifier;
 use App\Service\DateParser;
+use App\Service\MessageClassifier;
 use App\Service\MessageProcessor;
 use App\Service\MessageValidator;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ class MessageProcessorTest extends TestCase
     protected function setUp(): void
     {
         $validator = new MessageValidator();
-        $classifier = new KeywordClassifier();
+        $classifier = new MessageClassifier();
         $dateParser = new DateParser();
         $this->processor = new MessageProcessor($validator, $classifier, $dateParser);
     }

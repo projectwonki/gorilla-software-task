@@ -6,21 +6,19 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Command\ProcessCommand;
-use App\Service\Classifier\KeywordClassifier;
 use App\Service\DateParser;
+use App\Service\MessageClassifier;
 use App\Service\MessageProcessor;
 use App\Service\MessageValidator;
 use Symfony\Component\Console\Application;
 
 $application = new Application('Message Processor', '1.0.0');
 
-// Instantiate dependencies
 $validator = new MessageValidator();
-$classifier = new KeywordClassifier();
+$classifier = new MessageClassifier();
 $dateParser = new DateParser();
 $processor = new MessageProcessor($validator, $classifier, $dateParser);
 
-// Register command
 $application->add(new ProcessCommand($processor));
 
 $application->run();

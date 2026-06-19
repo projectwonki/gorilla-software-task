@@ -9,10 +9,6 @@ use Throwable;
 
 class DateParser
 {
-    /**
-     * Parses a date value into a DateTimeImmutable instance.
-     * Returns null if the value is empty, null, or cannot be parsed.
-     */
     public function parse(?string $value): ?DateTimeImmutable
     {
         if ($value === null) {

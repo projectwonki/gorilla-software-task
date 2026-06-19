@@ -41,7 +41,6 @@ class ProcessCommand extends Command
 
         $io->title('Message Processor CLI');
 
-        // 1. Verify source file
         if (!file_exists($sourceFile)) {
             $io->error(sprintf('Source file "%s" does not exist.', $sourceFile));
             return Command::FAILURE;
@@ -49,13 +48,12 @@ class ProcessCommand extends Command
 
         $io->text(sprintf('Reading source file: <info>%s</info>', $sourceFile));
 
-        $content = file_exists($sourceFile) ? file_get_contents($sourceFile) : false;
+        $content = file_get_contents($sourceFile);
         if ($content === false) {
             $io->error(sprintf('Failed to read source file "%s".', $sourceFile));
             return Command::FAILURE;
         }
 
-        // 2. Decode JSON
         try {
             $messages = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
         } catch (Throwable $e) {
@@ -68,7 +66,6 @@ class ProcessCommand extends Command
             return Command::FAILURE;
         }
 
-        // 3. Process messages
         $io->text('Processing messages...');
         $result = $this->processor->process($messages);
 
@@ -76,7 +73,6 @@ class ProcessCommand extends Command
         $failureReports = $result['failure_reports'];
         $failedMessages = $result['failed_messages'];
 
-        // 4. Ensure output directory exists
         if (!is_dir($outDir)) {
             $io->text(sprintf('Creating output directory: <info>%s</info>', $outDir));
             if (!mkdir($outDir, 0755, true) && !is_dir($outDir)) {
@@ -85,7 +81,6 @@ class ProcessCommand extends Command
             }
         }
 
-        // 5. Write output JSON files
         $io->text('Writing output files...');
 
         $inspectionsPath = rtrim($outDir, '/') . '/inspections.json';
@@ -101,7 +96,6 @@ class ProcessCommand extends Command
             return Command::FAILURE;
         }
 
-        // 6. Aggregate reasons for failed messages
         $failedReasons = [];
         foreach ($failedMessages as $failedMsg) {
             $reason = $failedMsg->reason;
@@ -111,7 +105,6 @@ class ProcessCommand extends Command
             $failedReasons[$reason]++;
         }
 
-        // 7. Print summary
         $io->section('Processing Summary');
         $io->horizontalTable(
             ['Total Processed Messages', 'Inspections Created', 'Failure Reports Created', 'Messages Not Processed'],
