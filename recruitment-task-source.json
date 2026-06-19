@@ -1,0 +1,122 @@
+[
+    {
+        "number": 1,
+        "description": "Air conditioning failure. The temperature in the showroom has risen to 27 degrees. Regards, Ela.",
+        "dueDate": "2020-01-04 13:30:00",
+        "phone": ""
+    },
+    {
+        "number": 2,
+        "description": "Request for a visit",
+        "dueDate": "2020-01-07 00:30:11",
+        "phone": "\""
+    },
+    {
+        "number": 3,
+        "description": "Leaking tap in the back room. Wet shoes!",
+        "dueDate": "2020-02-01 04:32:00",
+        "phone": "4"
+    },
+    {
+        "number": 4,
+        "description": "The plaster is falling off between the cupboard, shelf, and display case, please reattach it.",
+        "dueDate": "2020-02-03 15:15",
+        "phone": "666-445-127"
+    },
+    {
+        "number": 5,
+        "description": "Inspection scheduled for February. Please also take a look at the switchboard.",
+        "dueDate": "2020-02-05 00:00",
+        "phone": "888000128"
+    },
+    {
+        "number": 6,
+        "description": "Hello, good morning. I recently reported a failure, but now I would like an inspection. Please come and check the fan coil units.",
+        "dueDate": "",
+        "phone": "668-221-777"
+    },
+    {
+        "number": 7,
+        "description": "Failure! Failure of the deep well pump at the VIP guest pool. No time, please come immediately.",
+        "dueDate": "",
+        "phone": "668-221-777"
+    },
+    {
+        "number": 8,
+        "description": "Please come for an inspection of the electrical installation on February 15.",
+        "dueDate": "2020-02-15",
+        "phone": "+48606303404"
+    },
+    {
+        "number": 9,
+        "description": "The AC is not cooling, it only heats. I am not happy about this.",
+        "dueDate": null,
+        "phone": ""
+    },
+    {
+        "number": 10,
+        "description": "Could you please come for another inspection of the sewage pipes? We have a small odor problem here.",
+        "dueDate": "2020-02-22",
+        "phone": "+48701145976"
+    },
+    {
+        "number": 11,
+        "description": "Request for a visit",
+        "dueDate": "2020-02-23",
+        "phone": ""
+    },
+    {
+        "number": 12,
+        "description": "Very urgent. Please send service immediately, the refrigerators in the meat department work randomly, sometimes on, sometimes off.",
+        "dueDate": "2020-03-01",
+        "phone": "876123567"
+    },
+    {
+        "number": 13,
+        "description": "This is quite urgent because we have a chilled water leak near the ceiling in the corner. Please visit!",
+        "dueDate": "2020-03-02",
+        "phone": "873322976"
+    },
+    {
+        "number": 14,
+        "description": "Boiler failure in the main storage room.",
+        "dueDate": "",
+        "phone": ""
+    },
+    {
+        "number": 15,
+        "description": "Meat slicer. The main blade does not work, very urgent.",
+        "dueDate": "",
+        "phone": "888241636"
+    },
+    {
+        "number": 16,
+        "description": "Boiler failure in the main storage room.",
+        "dueDate": "",
+        "phone": ""
+    },
+    {
+        "number": 17,
+        "description": "I have bad news for you. Please come for another inspection of the protective mat in the cash desk furniture. It was checked recently, but unfortunately it still doesn’t work, urgent!",
+        "dueDate": "2020-03-02 00:00:00",
+        "phone": "+48505167301"
+    },
+    {
+        "number": 18,
+        "description": "I think it is time to arrange another inspection of the air conditioning in the sales area. It’s not very urgent but definitely necessary!",
+        "dueDate": "",
+        "phone": "506 482 179"
+    },
+    {
+        "number": 19,
+        "description": "No internet in the staff room, maybe someone disconnected the cable.",
+        "dueDate": "",
+        "phone": null
+    },
+    {
+        "number": 20,
+        "description": "We are requesting an immediate inspection of the forklifts, it seems something is leaking from one of them.",
+        "dueDate": "2020-04-01",
+        "phone": "567-124-572"
+    }
+]
