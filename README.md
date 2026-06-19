@@ -1,65 +1,46 @@
-# JSON Message Processor (PHP)
+# JSON Message Classifier
 
-This command-line application processes a list of service messages from a JSON file, classifies them into `inspection` or `failure_report` entities based on custom business rules, filters out duplicate descriptions, and outputs the results as JSON files.
-
-It also logs important processing steps to the console and prints a nice metrics summary at the end.
+A simple PHP CLI application that parses service messages from a JSON file, validates and deduplicates them, and classifies them into `inspections` and `failure_reports`.
 
 ## Requirements
 
-- **PHP**: `^8.0` (Tested on `8.3.31`)
-- **Composer**: `^2.0`
+- PHP 8.0+
+- Composer
 
-## Installation
+## Getting Started
 
-Clone the repository and install the dependencies:
+1. Install dependencies:
+   ```bash
+   composer install
+   ```
 
-```bash
-composer install
-```
+2. Run the processor command:
+   ```bash
+   php bin/console app:process recruitment-task-source.json --out-dir=./output
+   ```
 
-## Running the Application
+### Command Options
 
-You can invoke the application from the command line by passing the path to the input JSON file:
+- `--out-dir` / `-o`: Directory where output JSON files will be created (defaults to `./out`).
 
-```bash
-php bin/console app:process /path/to/source.json --out-dir=./out
-```
+## Output Files
 
-### Options
-
-- `--out-dir` or `-o`: Specifies the output directory where JSON files will be generated (default: `./out`).
-
-### Example
-
-```bash
-php bin/console app:process recruitment-task-source.json --out-dir=./output
-```
-
-### Output Files
-
-The tool produces three JSON files in the specified output directory:
-
-1. `inspections.json` - contains only inspection entities.
-2. `failure_reports.json` - contains only failure report entities.
-3. `failed_messages.json` - contains original messages that could not be processed (e.g., duplicate descriptions, missing required fields) along with a short explanation of the reason.
+The tool generates three JSON files in the output directory:
+- `inspections.json`: Messages classified as inspections.
+- `failure_reports.json`: Messages classified as failure reports.
+- `failed_messages.json`: Messages that failed validation or were flagged as duplicates, including the failure reason.
 
 ## Running Tests
 
-Automated tests are written with PHPUnit and verify the parsing, classification, priority evaluation, phone mapping, and duplicate detection.
-
-To run the test suite:
+Run the test suite using PHPUnit:
 
 ```bash
 vendor/bin/phpunit
 ```
 
-## Architecture and Extensibility
+## Implementation Notes
 
-The application is built using clean, decoupled components ready for future extensions:
-
-- **DTO / Models**: Uses distinct models (`Inspection`, `FailureReport`, `FailedMessage`) implementing `JsonSerializable` for precise serialization control.
-- **`MessageValidator`**: Performs initial structural validation on incoming raw data.
-- **`ClassifierInterface` & `KeywordClassifier`**: Encapsulates the classification rules. Supports **both Polish and English** keywords (e.g., `przegląd` and `inspection`) to ensure robust cross-lingual parsing.
-- **`DateParser`**: Gracefully parses standard dates, times, empty strings, nulls, and malformed date strings.
-- **`MessageProcessor`**: Coordinates validation, duplicate detection, mapping, and output generation.
-- **`ProcessCommand`**: A clean Symfony Console command handling user inputs, generating directories, writing output files, and displaying execution metrics.
+- **Validation & Deduplication**: The command validates input structure (requiring `number` and a non-empty `description`) and filters out messages with duplicate descriptions (case-insensitive).
+- **Classification**: Messages containing "przegląd" or "inspection" in the description are categorized as inspections; others are treated as failure reports.
+- **Date Handling**: Due dates are parsed into formatted dates (`Y-m-d`). Inspections with valid dates are set to `scheduled` status (with computed ISO weeks), while failure reports with valid dates are marked as `appointment`. Missing or invalid dates default to `new`.
+- **Phone Numbers**: Normalizes phone fields, leaving them empty if they contain invalid characters or no digits.
